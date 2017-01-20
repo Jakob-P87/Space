@@ -4,11 +4,12 @@
 #include <SFML\Graphics.hpp>
 #include <SFML\Audio.hpp>
 #include "Bullet.h"
+#include "Enemy.h"
 
 class Player
 {
 public:
-	Player();
+	Player(std::vector<Enemy*> &alien);
 	~Player();
 
 	void draw(sf::RenderWindow &win);
@@ -25,6 +26,8 @@ private:
 	sf::Texture m_BulletTex;
 
 	std::vector<Bullet*> m_Bullet;
+	std::vector<Enemy*> &enemy;
 
+	float shootDelay;
 	bool m_ShootPressed;
 };

@@ -2,7 +2,8 @@
 #include <iostream>
 
 
-Player::Player()
+Player::Player(std::vector<Enemy*> &alien) :
+	enemy(alien)
 {
 	//load the texture from disk
 	m_Texture.loadFromFile("SpaceShip.png");
@@ -16,6 +17,8 @@ Player::Player()
 	m_Sprite.setPosition(384, 700);
 
 	m_BulletTex.loadFromFile("Bullet.png");
+
+	shootDelay = 0;
 }
 
 
@@ -70,19 +73,20 @@ void Player::update(sf::Time delta)
 	//check if shootbutton was pressed
 	bool shootWasPressed = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
 	
-	if (shootWasPressed && !m_ShootPressed)
+	if (shootWasPressed && shootDelay < 0)
 	{
-		//set flag to true for debounce
-		m_ShootPressed = true;
+		shootDelay = 0.5;
 		//instansiate bullet
 		m_Bullet.push_back(new Bullet(m_Sprite.getPosition(), m_BulletTex));
 	}
+
+	else
+	{
+		shootDelay -= dt;
+	}
 	
 	//reset flag if shootbutton is not pressed
-	else if (!shootWasPressed && m_ShootPressed)
-	{
-		m_ShootPressed = false;
-	}
+
 	for (auto it = m_Bullet.begin(); it < m_Bullet.end(); )
 	{
 		bool destroyBullet = false;
@@ -91,7 +95,21 @@ void Player::update(sf::Time delta)
 		if ((*it)->getSprite().getPosition().y <= 0)
 			destroyBullet = true;
 
-		if (destroyBullet) {
+		for (auto  it2 = enemy.begin(); it2 < enemy.end(); )
+		{
+			if ((*it2)->checkCollision((*it)->getSprite()))
+			{
+				destroyBullet = true;
+				delete((*it2));
+				it2 = enemy.erase(it2);
+			}
+			else {
+				it2++;
+			}
+		}
+
+		if (destroyBullet) 
+		{
 			//clean up and destroy bullet
 			delete((*it));
 			it = m_Bullet.erase(it);

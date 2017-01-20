@@ -11,6 +11,7 @@ public:
 
 	void update(sf::Time dt);
 	void draw(sf::RenderWindow &win);
+
 	sf::Sprite& getSprite();
 
 private:

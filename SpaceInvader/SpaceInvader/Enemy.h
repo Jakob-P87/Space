@@ -12,6 +12,7 @@ public:
 
 	void draw(sf::RenderWindow &win);
 	void update(sf::Time delta);
+	bool checkCollision(sf::Sprite& spr);
 
 private:
 	//sprite definitions

@@ -19,16 +19,7 @@ int main()
 
 	std::vector<Enemy*> enemy;
 
-	Player playerObj;
-
-	for (int i = 0; i < 10; i++)
-	{
-		for (int j = 0; j < 5; j++)
-		{
-			enemy.push_back(new Enemy(alienTex, (startPos.x * i) + 50, startPos.y * j + 50));
-
-		}
-	}
+	Player playerObj(enemy);
 
 	while (window.isOpen())
 	{
@@ -39,6 +30,17 @@ int main()
 			//close window
 			if (event.type == sf::Event::Closed)
 				window.close();
+		}
+
+		if (enemy.size() == 0)
+		{
+			for (int i = 0; i < 10; i++)
+			{
+				for (int j = 0; j < 5; j++)
+				{
+					enemy.push_back(new Enemy(alienTex, (startPos.x * i) + 50, startPos.y * j + 50));
+				}
+			}
 		}
 
 		sf::Time dt = deltaTimer.restart();

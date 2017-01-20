@@ -16,7 +16,6 @@ Enemy::Enemy(sf::Texture &tex, float xpos, float ypos) :
 	//set startpos offscreen to the right
 	float startPos = 100;
 	dir = 1;
-
 	m_Alien.setPosition(xpos , ypos);
 
 }
@@ -43,4 +42,9 @@ void Enemy::update(sf::Time delta)
 		startPos = m_Alien.getPosition();
 		dir = -dir;
 	}
+}
+
+bool Enemy::checkCollision(sf::Sprite &spr)
+{
+	return m_Alien.getGlobalBounds().intersects(spr.getGlobalBounds());
 }
