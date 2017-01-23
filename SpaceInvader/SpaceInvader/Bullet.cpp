@@ -1,6 +1,6 @@
 #include "Bullet.h"
 
-
+//Set the sprite position and center the sprite
 Bullet::Bullet(sf::Vector2f startPos, sf::Texture &tex) :
 	m_Sprite(tex)
 {
@@ -16,7 +16,7 @@ Bullet::~Bullet()
 void Bullet::update(sf::Time dt) 
 {
 	float delta = dt.asSeconds();
-	m_Sprite.move(0, MOVE_SPEED * delta);
+	m_Sprite.move(0, MOVE_SPEED * delta); //Multiplies the movespeed with delta on Y axis
 }
 
 void Bullet::draw(sf::RenderWindow &win)

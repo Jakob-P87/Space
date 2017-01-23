@@ -1,9 +1,10 @@
 #include <vector>
 #include <cstdlib>
 #include <SFML/Graphics.hpp>
+#include <sstream>
 #include "Player.h"
 #include "Bullet.h"
-#include"Enemy.h"
+#include "Enemy.h"
 
 const int ENEMY_MOVE = 100;
 
@@ -13,9 +14,21 @@ int main()
 
 	sf::RenderWindow window(sf::VideoMode(768, 768), "Space Invaders");
 
+	//load our font for score tracking
+	sf::Font scoreFont;
+	scoreFont.loadFromFile("8-bit pusab.TTF");
+
+	//Set size, color and position of the font
+	sf::Text scoreText("Score: ", scoreFont, 16);
+	scoreText.setColor(sf::Color::White);
+	scoreText.setPosition(20, 20);
+
+
 	sf::Texture alienTex;
 	alienTex.loadFromFile("Alien.png");
 	sf::Vector2f startPos(50,50);
+
+restart: //If the enemy collides with the player
 
 	std::vector<Enemy*> enemy;
 
@@ -31,7 +44,7 @@ int main()
 			if (event.type == sf::Event::Closed)
 				window.close();
 		}
-
+		//If the last enemy is destroyed create new enemies
 		if (enemy.size() == 0)
 		{
 			for (int i = 0; i < 10; i++)
@@ -54,7 +67,18 @@ int main()
 		{
 			(*it)->update(dt);
 			(*it)->draw(window);
+
+			if ((*it)->checkCollision(playerObj.m_Sprite))
+			{
+				goto restart;
+			}
 		}
+
+		//Draw the score
+		std::stringstream scoreContents;
+		scoreContents << "Score: " << Player::score;
+		scoreText.setString(scoreContents.str());
+		window.draw(scoreText);
 
 		window.display();
 	}

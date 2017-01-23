@@ -1,15 +1,20 @@
 #include "player.h"
+#include "Enemy.h"
 #include <iostream>
 
+int Player::score = 0;
 
 Player::Player(std::vector<Enemy*> &alien) :
 	enemy(alien)
 {
+	score = 0;
+
 	//load the texture from disk
 	m_Texture.loadFromFile("SpaceShip.png");
 
 	m_Sprite.setTexture(m_Texture, true);
 
+	//Set the center to middle of sprite
 	sf::Vector2u size = m_Texture.getSize();
 	m_Sprite.setOrigin(size.x / 2, size.y / 2);
 
@@ -18,6 +23,7 @@ Player::Player(std::vector<Enemy*> &alien) :
 
 	m_BulletTex.loadFromFile("Bullet.png");
 
+	//Create a delay for the bullet to spawn
 	shootDelay = 0;
 }
 
@@ -70,7 +76,7 @@ void Player::update(sf::Time delta)
 		m_Sprite.move(768 - (m_Sprite.getLocalBounds().width / 2) - xPos, 0);
 	}
 	
-	//check if shootbutton was pressed
+	//check if shootbutton is held down
 	bool shootWasPressed = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
 	
 	if (shootWasPressed && shootDelay < 0)
@@ -85,16 +91,15 @@ void Player::update(sf::Time delta)
 		shootDelay -= dt;
 	}
 	
-	//reset flag if shootbutton is not pressed
-
 	for (auto it = m_Bullet.begin(); it < m_Bullet.end(); )
 	{
 		bool destroyBullet = false;
 
-		//also destroy bullet if it's offscreen
+		//Destroy bullet if it's offscreen
 		if ((*it)->getSprite().getPosition().y <= 0)
 			destroyBullet = true;
 
+		//Kill the enemies
 		for (auto  it2 = enemy.begin(); it2 < enemy.end(); )
 		{
 			if ((*it2)->checkCollision((*it)->getSprite()))
@@ -102,6 +107,8 @@ void Player::update(sf::Time delta)
 				destroyBullet = true;
 				delete((*it2));
 				it2 = enemy.erase(it2);
+
+				score += 10; //Add to the score
 			}
 			else {
 				it2++;
@@ -121,12 +128,15 @@ void Player::update(sf::Time delta)
 			it++;
 		}
 	}
-
-
-
 }
 
 sf::Sprite& Player::getSprite()
 {
 	return m_Sprite;
 }
+//Checks for collision with enemy
+bool Player::checkCollision(sf::Sprite &spr)
+{
+	return m_Sprite.getGlobalBounds().intersects(spr.getGlobalBounds());
+}
+

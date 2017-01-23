@@ -14,7 +14,7 @@ Enemy::Enemy(sf::Texture &tex, float xpos, float ypos) :
 	m_Alien.setOrigin(topSize.x / 2, 0);
 
 	//set startpos offscreen to the right
-	float startPos = 100;
+	float startPos = 0;
 	dir = 1;
 	m_Alien.setPosition(xpos , ypos);
 
@@ -34,16 +34,17 @@ void Enemy::update(sf::Time delta)
 {
 	float dt = delta.asSeconds();
 	
-	m_Alien.move(MOVE_SPEED * dt *dir, 0);
+	m_Alien.move(MOVE_SPEED * dt *dir, 0); //Multiplies the movementspeed with delta and direction
 
 	if (abs(m_Alien.getPosition().x - startPos.x) > 200)
 	{
-		m_Alien.move(0, 30);
+		m_Alien.move(0, 30); //Snap 30 frames down
 		startPos = m_Alien.getPosition();
-		dir = -dir;
+		dir = -dir; //Change direction when reaching 200 frames
+		MOVE_SPEED += 8; //Adds to the movementspeed when changing direction
 	}
 }
-
+//Checks collision with other objects
 bool Enemy::checkCollision(sf::Sprite &spr)
 {
 	return m_Alien.getGlobalBounds().intersects(spr.getGlobalBounds());

@@ -4,10 +4,9 @@
 class Enemy
 {
 public:
-	//texture reference in constructor to save memory
-	const int MOVE_SPEED = 30;
+	int MOVE_SPEED = 60;
 
-	Enemy(sf::Texture &tex, float xpos, float ypos);
+	Enemy(sf::Texture &tex, float xpos, float ypos); //Variables for the sprite position
 	~Enemy();
 
 	void draw(sf::RenderWindow &win);
